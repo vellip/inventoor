@@ -85,7 +85,12 @@ function App() {
   const [codes, setCodes] = useState({})
   const [spreadsheetId, setSpreadsheetId] = usePersistedState('spreadsheetId')
 
-  const updateSpreadsheet = () => updateSpreadsheets(spreadsheetId, codes)
+  const updateSpreadsheet = async () => {
+    const response = await updateSpreadsheets(spreadsheetId, codes)
+    if (response.status === 200) {
+      setCodes({})
+    }
+  }
 
   useEffect(() => {
     if (videoRef.current) setUpQuagga(videoRef.current, setCodes)
@@ -144,7 +149,7 @@ function App() {
                 if (signedIn) {
                   if (!spreadsheetId) {
                     const response = await createSpreadsheets()
-                    setSpreadsheetId(response.result.spreadsheetId)
+                    if (response.status === 200) setSpreadsheetId(response.result.spreadsheetId)
                   }
                 }
               }
@@ -245,10 +250,18 @@ function App() {
             })}
           </tbody>
         </table>
-        {}
-        <button onClick={updateSpreadsheet}>Speichern</button>
-        <button ref={signIn}>Anmelden</button>
-        <button ref={signOut}>Abmelden</button>
+        <div className="mt-4">
+          <button className="p-2.5 bg-blue-100 mr-2" ref={signIn}>Anmelden</button>
+          <button className="p-2.5 bg-blue-100 mr-2" ref={signOut}>Abmelden</button>
+        </div>
+        {
+          spreadsheetId && (
+          <div className="mt-4">
+            <button className="p-2.5 bg-blue-400 mr-2" onClick={updateSpreadsheet}>Speichern</button>
+            <a className="p-2.5 bg-blue-100 mr-2" href={`https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=100`}>Zum Dokument</a>
+          </div>
+          )
+        }
       </div>
     </div>
   )
