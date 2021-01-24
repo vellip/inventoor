@@ -1,6 +1,5 @@
 /* globals gapi  */
 
-import React from 'react'
 const sheetColumns = ['EAN', 'Bezeichnung', 'Einkaufspreis', 'MwSt', 'Anzahl SOLL', 'Anzahl IST']
 export const columns = ['EAN', 'Bezeichnung', 'Anzahl SOLL', 'Anzahl IST']
 const SHEET_ID = 100
