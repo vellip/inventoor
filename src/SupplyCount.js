@@ -10,7 +10,7 @@ function SupplyCount({ value, changeHandler }) {
         type="number"
         onChange={(e) => changeHandler(e.target.value)}
         value={value}
-        className="bg-transparent border-b border-black mx-4 w-10 appearance-none text-xl text-center"
+        className="bg-transparent rounded-none border-b border-black mx-4 w-10 appearance-none text-xl text-center"
       />
       <button onClick={() => changeHandler(value + 1)}>
         <AiOutlinePlusCircle size={20} />

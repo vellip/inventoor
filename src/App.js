@@ -82,46 +82,10 @@ function App() {
   const videoRef = useRef(null)
   const signIn = useRef(null)
   const signOut = useRef(null)
-  const [codes, setCodes] = useState({ 4058172592959: undefined, 4014549357682: undefined })
+  const [codes, setCodes] = useState({})
   const [spreadsheetId, setSpreadsheetId] = usePersistedState('spreadsheetId')
 
   const updateSpreadsheet = () => updateSpreadsheets(spreadsheetId, codes)
-
-  const setUpGoogleApi = () => {
-    gapi.load('client:auth2', () => {
-      gapi.client
-        .init({
-          apiKey: 'AIzaSyBuaOlzxUMFiyjDCBLWL2rzE23sXY1fWDA',
-          clientId: '647451046675-qf49g1k0dtchdsol82stgo823r5r5sua.apps.googleusercontent.com',
-          discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-          scope: 'https://www.googleapis.com/auth/spreadsheets',
-        })
-        .then(
-          function () {
-            const updateSigninStatus = async (signedIn) => {
-              alert(signedIn)
-              if (signedIn) {
-                if (!spreadsheetId) {
-                  const response = await createSpreadsheets()
-                  alert(JSON.stringify(response))
-                  setSpreadsheetId(response.result.spreadsheetId)
-                }
-              }
-            }
-            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus)
-            // Handle the initial sign-in state.
-            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
-
-            signIn.current.onclick = () => gapi.auth2.getAuthInstance().signIn()
-            signOut.current.onclick = () => gapi.auth2.getAuthInstance().signOut()
-          },
-          function (error) {
-            console.error(JSON.stringify(error, null, 2))
-          }
-        )
-        .catch(console.log)
-    })
-  }
 
   useEffect(() => {
     if (videoRef.current) setUpQuagga(videoRef.current, setCodes)
@@ -165,6 +129,40 @@ function App() {
 
   useEffect(() => {
     const script = document.createElement('script')
+    const setUpGoogleApi = () => {
+      gapi.load('client:auth2', () => {
+        gapi.client
+          .init({
+            apiKey: process.env.REACT_APP_API_KEY,
+            clientId: '647451046675-qf49g1k0dtchdsol82stgo823r5r5sua.apps.googleusercontent.com',
+            discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            scope: 'https://www.googleapis.com/auth/spreadsheets'
+          })
+          .then(
+            function() {
+              const updateSigninStatus = async (signedIn) => {
+                if (signedIn) {
+                  if (!spreadsheetId) {
+                    const response = await createSpreadsheets()
+                    setSpreadsheetId(response.result.spreadsheetId)
+                  }
+                }
+              }
+              gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus)
+              // Handle the initial sign-in state.
+              updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
+
+              signIn.current.onclick = () => gapi.auth2.getAuthInstance().signIn()
+              signOut.current.onclick = () => gapi.auth2.getAuthInstance().signOut()
+            },
+            function(error) {
+              console.error(JSON.stringify(error, null, 2))
+            }
+          )
+          .catch(console.log)
+      })
+    }
+
 
     script.src = 'https://apis.google.com/js/api.js'
     script.async = true
@@ -176,12 +174,12 @@ function App() {
     return () => {
       document.body.removeChild(script)
     }
-  }, [])
+  }, [setSpreadsheetId, spreadsheetId])
 
   return (
     <div className="App" ref={videoRef}>
       <video autoPlay muted playsInline className="mb-10 bg-gray-100" />
-      <div className="container mx-auto max-w-3xl bg-gray-100 p-10">
+      <div className="container mx-auto max-w-3xl bg-gray-100 p-10 overflow-auto">
         <table className="border-collapse bg-indigo-200 w-full text-sm">
           <thead>
             <tr>
@@ -204,7 +202,7 @@ function App() {
                         type="text"
                         value={codeObj?.name}
                         onChange={(e) => setObj({ name: e.target.value })}
-                        className="bg-transparent border-b border-black placeholder-gray-500 flex-grow"
+                        className="bg-transparent rounded-none border-b border-black placeholder-gray-500 flex-grow"
                         placeholder="Name"
                       />
                       <button
