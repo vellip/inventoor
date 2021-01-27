@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePersistedState } from './lib/persistantState'
 import { columns, createSpreadsheets, updateSpreadsheets } from './lib/spreadsheets'
 import Modal from './Modal'
-import { AiOutlineClose, BiFileFind } from 'react-icons/all'
+import { AiOutlineMinusCircle, AiOutlineClose, BiFileFind } from 'react-icons/all'
 import Suggestions from './Suggestions'
 import SupplyCount from './SupplyCount'
 
@@ -200,7 +200,16 @@ function App() {
                 setCodes({ ...codes, [code]: { ...codeObj, ...newValues } })
               return codeObj ? (
                 <tr key={code}>
-                  <td className="border-2 border-indigo-400 p-2">{code}</td>
+                  <td className="border-2 border-indigo-400 p-2">
+                    <div className='flex'>
+                    <button className="mr-2.5" onClick={() => {
+                      const clone = Object.assign({}, codes)
+                      delete clone[code]
+                      setCodes(clone)
+                    }}><AiOutlineMinusCircle size={20} /></button>
+                    {code}
+                    </div>
+                  </td>
                   <td className="border-2 border-indigo-400 p-2">
                     <div className="flex flex-row">
                       <input
