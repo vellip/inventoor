@@ -199,7 +199,7 @@ function App() {
               const setObj = (newValues) =>
                 setCodes({ ...codes, [code]: { ...codeObj, ...newValues } })
               return codeObj ? (
-                <tr>
+                <tr key={code}>
                   <td className="border-2 border-indigo-400 p-2">{code}</td>
                   <td className="border-2 border-indigo-400 p-2">
                     <div className="flex flex-row">
