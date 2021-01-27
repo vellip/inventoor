@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePersistedState } from './lib/persistantState'
 import { columns, createSpreadsheets, updateSpreadsheets } from './lib/spreadsheets'
 import Modal from './Modal'
-import { BiFileFind } from 'react-icons/all'
+import { AiOutlineClose, BiFileFind } from 'react-icons/all'
 import Suggestions from './Suggestions'
 import SupplyCount from './SupplyCount'
 
@@ -82,7 +82,7 @@ function App() {
   const videoRef = useRef(null)
   const signIn = useRef(null)
   const signOut = useRef(null)
-  const [codes, setCodes] = useState({})
+  const [codes, setCodes] = useState({4013307767381: undefined})
   const [spreadsheetId, setSpreadsheetId] = usePersistedState('spreadsheetId')
 
   const updateSpreadsheet = async () => {
@@ -223,6 +223,7 @@ function App() {
                       </button>
                     </div>
                     <Modal shown={codeObj?.openModal}>
+                      <button className="absolute top-5 right-5" onClick={() =>setObj({openModal: false})}><AiOutlineClose size={20} /></button>
                       {codeObj?.suggestions.length ? (
                         <Suggestions
                           suggestions={codeObj.suggestions}

@@ -1,6 +1,6 @@
 /* globals gapi  */
 
-const sheetColumns = ['EAN', 'Bezeichnung', 'Einkaufspreis', 'MwSt', 'Anzahl SOLL', 'Anzahl IST']
+const sheetColumns = ['EAN', 'Bezeichnung', 'Anzal SOLL', 'Anzahl IST', 'Einkaufspreis', 'Seriennummer']
 export const columns = ['EAN', 'Bezeichnung', 'Anzahl SOLL', 'Anzahl IST']
 const SHEET_ID = 100
 
@@ -54,8 +54,6 @@ export async function updateSpreadsheets(spreadsheetId, codes) {
                 values: [
                   { userEnteredValue: { stringValue: code } },
                   { userEnteredValue: { stringValue: codeObj.name || '' } },
-                  { userEnteredValue: { stringValue: '' } },
-                  { userEnteredValue: { stringValue: '' } },
                   { userEnteredValue: { numberValue: codeObj.valueShould } },
                   { userEnteredValue: { numberValue: codeObj.valueIs } },
                 ],
